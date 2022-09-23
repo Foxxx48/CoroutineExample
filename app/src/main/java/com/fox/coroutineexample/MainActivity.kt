@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Message
+import android.util.Log
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.fox.coroutineexample.databinding.ActivityMainBinding
@@ -14,6 +16,13 @@ class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
 
+    private val handler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            Log.d("HANDLER", "$msg")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -23,9 +32,12 @@ class MainActivity : AppCompatActivity() {
             hideParams()
             loadData()
         }
+        handler.sendMessage(Message.obtain(handler, 0, 17))
+
     }
 
     private fun loadData() {
+        Log.d("MainActivity", "Load started:  $this")
         binding.progressBar.isVisible = true
         binding.btnDownload.isEnabled = false
         loadCity {
