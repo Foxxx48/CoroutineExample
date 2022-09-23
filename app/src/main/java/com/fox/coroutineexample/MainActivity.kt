@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadCity(callback: (String) -> Unit) {
         thread {
             Thread.sleep(5000)
-            Handler(Looper.getMainLooper()).post {
+           runOnUiThread {
                 callback.invoke("Moscow")
                binding.progressBar.isVisible = false
             }
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadTemperature(city: String, callback: (Int) -> Unit) {
         thread {
             Thread.sleep(1500)
-            Handler(Looper.getMainLooper()).post {
+            runOnUiThread {
                 binding.progressBar.isVisible = true
                 Toast.makeText(
                     this,
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
             Thread.sleep(5000)
-            Handler(Looper.getMainLooper()).post {
+            runOnUiThread {
                 callback.invoke(17)
             }
         }
