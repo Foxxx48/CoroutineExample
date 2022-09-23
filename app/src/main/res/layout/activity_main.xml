@@ -20,7 +20,7 @@
             android:id="@+id/tv_City"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="City: "
+            android:text="City:  "
             android:textColor="@color/purple_700"
             android:textSize="20sp" />
 
@@ -59,7 +59,7 @@
             android:id="@+id/tv_temp_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Temp:"
+            android:text="Temp: "
             android:textColor="@color/purple_700"
             android:textSize="20sp" />
 
