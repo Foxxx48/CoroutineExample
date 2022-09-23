@@ -3,6 +3,7 @@ package com.fox.coroutineexample
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.fox.coroutineexample.databinding.ActivityMainBinding
@@ -12,8 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
-
-    val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadCity(callback: (String) -> Unit) {
         thread {
             Thread.sleep(5000)
-            handler.post {
+            Handler(Looper.getMainLooper()).post {
                 callback.invoke("Moscow")
                binding.progressBar.isVisible = false
             }
@@ -55,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadTemperature(city: String, callback: (Int) -> Unit) {
         thread {
             Thread.sleep(1500)
-            handler.post {
+            Handler(Looper.getMainLooper()).post {
                 binding.progressBar.isVisible = true
                 Toast.makeText(
                     this,
@@ -64,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
             Thread.sleep(5000)
-            handler.post {
+            Handler(Looper.getMainLooper()).post {
                 callback.invoke(17)
             }
         }
