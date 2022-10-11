@@ -8,7 +8,11 @@ import android.os.Message
 import android.util.Log
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.fox.coroutineexample.databinding.ActivityMainBinding
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
@@ -16,12 +20,6 @@ class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
 
-    private val handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            Log.d("HANDLER", "$msg")
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,56 +27,69 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnDownload.setOnClickListener {
-            hideParams()
-            loadData()
-        }
-        handler.sendMessage(Message.obtain(handler, 0, 17))
 
-    }
+            val deferredCity = lifecycleScope.async {
+                hideParams()
+                binding.progressBar.isVisible = true
+                binding.btnDownload.isEnabled = false
+                val city = loadCity()
+                binding.tvCityName.text = city
+                city
+            }
 
-    private fun loadData() {
-        Log.d("MainActivity", "Load started:  $this")
-        binding.progressBar.isVisible = true
-        binding.btnDownload.isEnabled = false
-        loadCity {
-            binding.tvCityName.text = it
-            loadTemperature(it) {
-                binding.tvTempValue.text = it.toString()
+
+            val deferredTemp = lifecycleScope.async {
+                val temp = loadTemperature()
+                binding.tvTempValue.text = temp.toString()
+                temp
+            }
+
+            lifecycleScope.launch {
+                val city = deferredCity.await()
+                val temp = deferredTemp.await()
+                Toast.makeText(
+                    this@MainActivity,
+                    "City $city  temperature $temp",
+                    Toast.LENGTH_SHORT
+                ).show()
                 binding.progressBar.isVisible = false
                 binding.btnDownload.isEnabled = true
             }
         }
-
     }
 
-    private fun loadCity(callback: (String) -> Unit) {
-        thread {
-            Thread.sleep(5000)
-           runOnUiThread {
-                callback.invoke("Moscow")
-               binding.progressBar.isVisible = false
-            }
+    private suspend fun loadData() {
+        Log.d("TAG_MainActivity", "Load started:  $this")
+        binding.progressBar.isVisible = true
+        binding.btnDownload.isEnabled = false
 
-        }
-
+        val city = loadCity()
+        binding.tvCityName.text = city
+        hideProgressBar()
+        val temp = loadTemperature()
+        binding.tvTempValue.text = temp.toString()
+        binding.progressBar.isVisible = false
+        binding.btnDownload.isEnabled = true
+        Log.d("TAG_MainActivity", "Load finished:  $this")
     }
 
-    private fun loadTemperature(city: String, callback: (Int) -> Unit) {
-        thread {
-            Thread.sleep(1500)
-            runOnUiThread {
-                binding.progressBar.isVisible = true
-                Toast.makeText(
-                    this,
-                    getString(R.string.loading_temperature_toast, city),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            Thread.sleep(5000)
-            runOnUiThread {
-                callback.invoke(17)
-            }
-        }
+    private suspend fun loadCity(): String {
+        delay(5000)
+        return "Moscow"
+    }
+
+    private suspend fun loadTemperature(): Int {
+        delay(5000)
+        return 17
+    }
+
+    private suspend fun hideProgressBar() {
+        binding.progressBar.isVisible = false
+
+        delay(2000)
+
+        binding.progressBar.isVisible = true
+
     }
 
     private fun hideParams() {
@@ -86,7 +97,7 @@ class MainActivity : AppCompatActivity() {
             binding.tvCityName.text = ""
         }
         if (binding.tvTempValue != null) {
-           binding.tvTempValue.text = ""
+            binding.tvTempValue.text = ""
         }
     }
 
