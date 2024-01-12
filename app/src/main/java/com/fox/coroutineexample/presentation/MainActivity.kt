@@ -1,30 +1,31 @@
-package com.fox.coroutineexample
+package com.fox.coroutineexample.presentation
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.fox.coroutineexample.databinding.ActivityMainBinding
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
-    private var _binding: ActivityMainBinding? = null
-    private val binding get() = _binding!!
-
+    private val binding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.btnExActivity.setOnClickListener {
+            val intent = Intent(this, ExampleActivity::class.java)
+            startActivity(intent)
+        }
 
         binding.btnDownload.setOnClickListener {
 
@@ -99,10 +100,5 @@ class MainActivity : AppCompatActivity() {
         if (binding.tvTempValue != null) {
             binding.tvTempValue.text = ""
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 }

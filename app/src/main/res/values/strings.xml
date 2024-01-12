@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">CoroutineExample</string>
     <string name="loading_temperature_toast">Loading temperature for city: %s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="refresh">Refresh</string>
+    <string name="currency_price">$%s</string>
 </resources>
