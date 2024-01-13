@@ -1,7 +1,6 @@
-package com.fox.coroutineexample.domain
+package com.fox.coroutineexample.data
 
-import com.fox.coroutineexample.data.Item
-import com.fox.coroutineexample.data.ItemRepository
+import com.fox.coroutineexample.domain.ItemRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -23,7 +22,7 @@ class ItemRepositoryImpl: ItemRepository {
     private val refreshEvents = MutableSharedFlow<Unit>()
 
 
-     val getCurrencyListFlow = flow {
+    val getCurrencyListFlow = flow {
         delay(3000)
         getCurrencyList()
         emit(cryptoCurrencyList.toList())
@@ -31,7 +30,7 @@ class ItemRepositoryImpl: ItemRepository {
             delay(3000)
             generateCurrencyList()
             emit(cryptoCurrencyList.toList())
-            throw RuntimeException("Exception in getCurrencyListFlow")
+            throw RuntimeException("Oops Exception in ::getCurrencyListFlow: ItemRepository")
         }
     }.stateIn(
         scope = scope,
@@ -39,7 +38,7 @@ class ItemRepositoryImpl: ItemRepository {
         initialValue = cryptoCurrencyList.toList()
     )
 
-    suspend fun refreshList() {
+    override suspend fun refreshList() {
         refreshEvents.emit(Unit)
     }
 

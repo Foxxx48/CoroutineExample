@@ -13,8 +13,8 @@ sealed interface State {
 
         object Initial : UiState()
 
-        class Error(
-           val throwable: Throwable,
+        data class Error(
+            val throwable: Throwable,
             val message: String
         ) : UiState()
 

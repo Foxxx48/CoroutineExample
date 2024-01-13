@@ -1,17 +1,15 @@
 package com.fox.coroutineexample.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.fox.coroutineexample.R
 import com.fox.coroutineexample.State
 import com.fox.coroutineexample.databinding.ActivityAxampleBinding
-import com.fox.coroutineexample.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 
 class ExampleActivity : AppCompatActivity() {
@@ -35,7 +33,7 @@ class ExampleActivity : AppCompatActivity() {
         observeViewModel()
 
         binding.btnRefresh.setOnClickListener {
-            Log.d("Crypto", "buttonRefresh Click")
+            Log.d("CryptoApp", "ExampleActivity buttonRefresh Click")
             lifecycleScope.launch {
                 viewModel.refreshList()
             }
@@ -75,7 +73,7 @@ class ExampleActivity : AppCompatActivity() {
 
                         is State.UiState.Error -> {
                             Log.d(
-                                "Item", it.throwable.message.toString()
+                                "CryptoApp ", "OOPS Its Exception ExampleActivity!!!", it.throwable
                             )
                         }
                     }
@@ -90,7 +88,7 @@ class ExampleActivity : AppCompatActivity() {
                     when (it) {
                         is State.UiState.Content -> {
                             Log.d(
-                                "CryptoApp", it.itemList.joinToString()
+                                "CryptoApp", " launch in ExampleActivity"
                             )
                         }
 
