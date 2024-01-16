@@ -30,7 +30,7 @@ class ItemRepositoryImpl: ItemRepository {
             delay(3000)
             generateCurrencyList()
             emit(cryptoCurrencyList.toList())
-            throw RuntimeException("Oops Exception in ::getCurrencyListFlow: ItemRepository")
+//            throw RuntimeException("Oops Exception in ::getCurrencyListFlow: ItemRepository")
         }
     }.stateIn(
         scope = scope,

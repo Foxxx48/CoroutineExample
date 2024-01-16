@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.launch
 
 class ItemViewModel : ViewModel() {
@@ -24,10 +25,13 @@ class ItemViewModel : ViewModel() {
         repository.getCurrencyListFlow
             .filter { it.isNotEmpty() }
             .map { State.UiState.Content(itemList = it) as State.UiState }
-
             .onStart {
-                State.UiState.Loading
+                emit(State.UiState.Loading)
             }
+            .retry(2) {
+                true
+            }
+
             .catch {
                 Log.d("CryptoApp", "LogD: state ViewModel")
                 emit(State.UiState.Error(it, "OOPS state ViewModel"))
